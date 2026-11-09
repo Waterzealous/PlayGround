@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#080a1a" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>PITCH FEVER — 3v3 Street Football</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;0,900;1,800;1,900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="game-canvas"></canvas>
+      <div class="screen-fx"></div>
+      <div class="vignette"></div>
+
+      <!-- ============ HUD ============ -->
+      <div id="hud" class="hidden">
+        <div class="hud-top">
+          <div class="hud-left">
+            <button id="pause-btn" class="icon-btn" aria-label="Pause">
+              <span></span><span></span>
+            </button>
+            <div class="playstyle-chip" id="hud-playstyle">
+              <span class="ps-icon">⚡</span>
+              <span class="ps-copy"><small>PLAYSTYLE</small><b>STREET</b></span>
+            </div>
+          </div>
+
+          <div class="scoreboard">
+            <div class="team home">
+              <span class="kit-dot"></span>
+              <span class="team-name">NEON</span>
+            </div>
+            <div class="score-nums"><span id="score-home">0</span><i>:</i><span id="score-away">0</span></div>
+            <div class="team away">
+              <span class="team-name">REDLINE</span>
+              <span class="kit-dot"></span>
+            </div>
+            <div class="clock" id="match-clock">2:00</div>
+          </div>
+
+          <div class="hud-right">
+            <div class="minimap-wrap">
+              <canvas id="minimap" width="180" height="110"></canvas>
+              <span class="mini-label">RADAR</span>
+            </div>
+            <button id="sound-btn" class="icon-btn sound" aria-label="Toggle sound">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="wave" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="hud-center">
+          <div class="stamina-wrap">
+            <span class="stamina-label">TURBO</span>
+            <div class="stamina-bar"><div id="stamina-fill"></div></div>
+          </div>
+          <div class="possession" id="possession-pill">KICK OFF</div>
+        </div>
+
+        <div class="event-stack" id="event-stack"></div>
+
+        <div class="hud-bottom">
+          <div class="joystick-zone" id="joystick-zone">
+            <div class="joystick-ring"></div>
+            <div class="joystick-knob" id="joystick-knob">
+              <svg viewBox="0 0 24 24"><path d="M12 4l3 4H9l3-4zm0 16l-3-4h6l-3 4zM4 12l4-3v6l-4-3zm16 0l-4 3V9l4 3z"/></svg>
+            </div>
+            <span class="stick-label">MOVE</span>
+          </div>
+
+          <div class="control-hints" id="control-hints">
+            <span><b>MOVE</b> drag</span>
+            <span><b>SHOOT</b> hold</span>
+            <span><b>SKILL</b> burst</span>
+          </div>
+
+          <div class="action-cluster">
+            <button class="action small skill-btn" id="skill-btn" aria-label="Skill move">
+              <span class="action-glow"></span>
+              <span class="action-ico">✦</span>
+              <span class="action-name">SKILL</span>
+              <span class="cooldown-mask"></span>
+            </button>
+            <button class="action small sprint-btn" id="sprint-btn" aria-label="Turbo sprint">
+              <span class="action-glow"></span>
+              <span class="action-ico">»</span>
+              <span class="action-name">TURBO</span>
+            </button>
+            <button class="action pass-btn" id="pass-btn" aria-label="Pass">
+              <span class="action-glow"></span>
+              <span class="action-ico">➤</span>
+              <span class="action-name">PASS</span>
+            </button>
+            <button class="action shoot-btn" id="shoot-btn" aria-label="Shoot">
+              <span class="charge-fill"></span>
+              <span class="action-glow"></span>
+              <span class="action-ico">◉</span>
+              <span class="action-name">SHOOT</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="shot-aim" id="shot-aim">
+          <span class="aim-label">POWER</span>
+          <div class="aim-track"><div id="aim-fill"></div></div>
+          <span class="aim-hint">steer to curve</span>
+        </div>
+      </div>
+
+      <!-- ============ GOAL BANNER ============ -->
+      <div id="goal-banner" class="goal-banner">
+        <div class="goal-burst"></div>
+        <div class="goal-kicker" id="goal-kicker">NEON FC</div>
+        <div class="goal-word">GOAL<span>!</span></div>
+        <div class="goal-score" id="goal-score">1 — 0</div>
+        <div class="goal-sub" id="goal-sub">Pure filth from #10</div>
+      </div>
+
+      <!-- ============ MAIN MENU ============ -->
+      <div id="menu" class="screen menu-screen">
+        <div class="menu-top">
+          <div class="brand">
+            <span class="brand-mark">PF</span>
+            <span class="brand-copy">PITCH FEVER<small>STREET LEAGUE</small></span>
+          </div>
+          <div class="menu-meta">
+            <span class="live-dot"></span> 3V3 EXHIBITION
+            <button id="menu-sound" class="icon-btn sound" aria-label="Toggle sound">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="wave" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="menu-grid">
+          <div class="hero">
+            <div class="hero-eyebrow"><span></span> THE CAGE IS LIVE <span></span></div>
+            <h1>PITCH<br /><em>FEVER</em></h1>
+            <p class="hero-tag">Three-a-side. Zero mercy.<br />Break ankles, bend shots, own the cage.</p>
+            <div class="hero-stats">
+              <div><b>3v3</b><span>SMALL SIDED</span></div>
+              <div><b>02:00</b><span>PER MATCH</span></div>
+              <div><b>∞</b><span>SKILL MOVES</span></div>
+            </div>
+          </div>
+
+          <div class="setup">
+            <div class="setup-head">
+              <span class="setup-num">01</span>
+              <div><h2>PICK YOUR PLAYSTYLE</h2><p>Each one rewires how your team moves.</p></div>
+            </div>
+            <div class="playstyles" id="playstyles">
+              <button class="ps-card selected street" data-style="street">
+                <span class="ps-badge">S</span>
+                <span class="ps-card-copy"><b>STREET</b><small>Elastico king</small></span>
+                <span class="ps-perk">Tighter touches · −40% skill cooldown</span>
+              </button>
+              <button class="ps-card tiki" data-style="tiki">
+                <span class="ps-badge">T</span>
+                <span class="ps-card-copy"><b>TIKI-TAKA</b><small>One-touch chaos</small></span>
+                <span class="ps-perk">Laser passes · smarter off-ball runs</span>
+              </button>
+              <button class="ps-card power" data-style="power">
+                <span class="ps-badge">P</span>
+                <span class="ps-card-copy"><b>POWER</b><small>Rocket launcher</small></span>
+                <span class="ps-perk">+20% shot power · stronger tackles</span>
+              </button>
+              <button class="ps-card press" data-style="press">
+                <span class="ps-badge">P</span>
+                <span class="ps-card-copy"><b>PRESS</b><small>Full-throttle</small></span>
+                <span class="ps-perk">Endless turbo · relentless auto-press</span>
+              </button>
+            </div>
+
+            <div class="setup-row">
+              <div class="setup-block">
+                <span class="setup-num">02</span>
+                <span class="block-label">BOT DIFFICULTY</span>
+                <div class="segmented" id="difficulty">
+                  <button data-diff="rookie">ROOKIE</button>
+                  <button data-diff="pro" class="active">PRO</button>
+                  <button data-diff="elite">ELITE</button>
+                </div>
+              </div>
+              <div class="setup-block kit-block">
+                <span class="setup-num">03</span>
+                <span class="block-label">HOME KIT</span>
+                <div class="kits" id="kits">
+                  <button class="kit active" data-kit="cyan" style="--kit:#21f6ff" aria-label="Cyan kit"></button>
+                  <button class="kit" data-kit="lime" style="--kit:#c6ff3a" aria-label="Lime kit"></button>
+                  <button class="kit" data-kit="pink" style="--kit:#ff3ec8" aria-label="Pink kit"></button>
+                </div>
+              </div>
+            </div>
+
+            <button id="start-btn" class="start-btn">
+              <span class="start-kicker">EXHIBITION MATCH</span>
+              <span class="start-main">KICK OFF <i>→</i></span>
+              <span class="start-shine"></span>
+            </button>
+
+            <p class="menu-controls"><b>TOUCH:</b> drag to move · hold shoot to charge · swipe to curve &nbsp; <b>KEYS:</b> WASD · SPACE shoot · E pass · SHIFT turbo · Q skill</p>
+          </div>
+        </div>
+
+        <div class="menu-bottom">
+          <span>NEON DISTRICT · NIGHT SESSION</span>
+          <span class="menu-bottom-right">BUILT FOR PHONE + TABLET</span>
+        </div>
+        <div class="rotate-prompt">
+          <span class="rotate-phone"></span>
+          Rotate for the full cage experience
+        </div>
+      </div>
+
+      <!-- ============ PAUSE ============ -->
+      <div id="pause-screen" class="screen modal-screen hidden">
+        <div class="modal-card">
+          <span class="modal-kicker">MATCH PAUSED</span>
+          <h2>TIMEOUT</h2>
+          <div class="modal-score"><span id="pause-home">0</span><i>—</i><span id="pause-away">0</span></div>
+          <div class="modal-btns">
+            <button id="resume-btn" class="solid-btn">RESUME <i>→</i></button>
+            <button id="restart-btn" class="ghost-btn">RESTART</button>
+            <button id="quit-btn" class="ghost-btn">MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ FULL TIME ============ -->
+      <div id="end-screen" class="screen modal-screen hidden">
+        <div class="modal-card end-card">
+          <span class="modal-kicker" id="end-kicker">FULL TIME</span>
+          <h2 id="end-title">YOU WIN</h2>
+          <div class="modal-score"><span id="end-home">0</span><i>—</i><span id="end-away">0</span></div>
+          <p id="end-sub">Certified cage royalty.</p>
+          <div class="end-stats">
+            <div><b id="stat-shots">0</b><span>SHOTS</span></div>
+            <div><b id="stat-skills">0</b><span>SKILLS</span></div>
+            <div><b id="stat-poss">0%</b><span>POSSESSION</span></div>
+          </div>
+          <div class="modal-btns">
+            <button id="rematch-btn" class="solid-btn">REMATCH <i>→</i></button>
+            <button id="menu-btn" class="ghost-btn">CHANGE PLAYSTYLE</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="toast" class="toast"></div>
+      <div id="loading" class="loading">
+        <div class="loading-mark">PF</div>
+        <span class="loading-text">WARMING UP THE CAGE</span>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
