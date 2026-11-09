@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#071514" />
+  <title>TOUCHLINE — 3v3 street football</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="game-shell">
+    <canvas id="pitch" aria-label="3D football pitch"></canvas>
+    <div class="vignette"></div>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Touchline home"><span class="brand-mark">T</span><span>TOUCH<span class="brand-light">LINE</span></span></a>
+      <div class="match-chip"><span class="live-dot"></span><span>EXHIBITION</span></div>
+      <button class="icon-btn" id="sound-toggle" aria-label="Toggle sound">♫</button>
+    </header>
+    <section class="scoreboard" aria-live="polite">
+      <div class="team-score home-score"><i></i><span>YOUR SIDE</span><strong id="home-goals">0</strong></div>
+      <div class="clock"><strong id="clock">02:30</strong><small>1ST HALF</small></div>
+      <div class="team-score away-score"><strong id="away-goals">0</strong><span>STREET XI</span><i></i></div>
+    </section>
+    <div class="match-label"><span id="status-label">KICK OFF</span><span class="label-line"></span><span>3 v 3</span></div>
+    <aside class="playstyle-tag" id="playstyle-tag"><span class="style-glyph">✦</span><span><small>PLAYSTYLE</small><b>TRICKSTER</b></span></aside>
+    <div class="toast" id="toast">NUTMEG! <small>+50 XP</small></div>
+    <div class="shot-meter" id="shot-meter"><div class="meter-label">SHOT POWER <b id="power-label">0%</b></div><div class="meter-track"><i id="power-fill"></i></div></div>
+    <section class="start-screen" id="start-screen">
+      <div class="start-content">
+        <div class="eyebrow"><span></span> THE STREET IS YOURS</div>
+        <h1>OWN<br><em>THE</em> PITCH<span class="period">.</span></h1>
+        <p class="hero-copy">Three aside. No rules but style.<br>Make every touch count.</p>
+        <div class="style-heading"><span>CHOOSE YOUR PLAYSTYLE</span><small>CHANGES YOUR GAME</small></div>
+        <div class="style-cards">
+          <button class="style-card selected" data-style="trickster"><span class="card-icon">〰</span><b>TRICKSTER</b><small>QUICK FEET · SKILL BOOST</small><i>01</i></button>
+          <button class="style-card" data-style="finisher"><span class="card-icon">◉</span><b>FINISHER</b><small>POWER SHOTS · LONG RANGE</small><i>02</i></button>
+          <button class="style-card" data-style="playmaker"><span class="card-icon">⌁</span><b>PLAYMAKER</b><small>VISION · PINPOINT PASSES</small><i>03</i></button>
+        </div>
+        <button class="play-button" id="play-button"><span>PLAY MATCH</span><b>→</b></button>
+        <div class="start-foot"><span>3v3 QUICK MATCH</span><span>● BOTS ONLINE</span></div>
+      </div>
+      <div class="start-art"><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-ball">⚽</div><div class="art-caption">EST. AFTER DARK<br><b>2025</b></div><div class="art-vertical">TOUCHLINE / 001</div></div>
+    </section>
+    <section class="pause-screen hidden" id="pause-screen"><div class="pause-card"><div class="eyebrow"><span></span> TAKE A BREATHER</div><h2>MATCH<br><em>PAUSED</em></h2><p>The pitch isn't going anywhere.</p><button class="play-button" id="resume-button"><span>BACK TO IT</span><b>→</b></button><button class="text-button" id="restart-button">RESTART MATCH</button></div></section>
+    <div class="touch-controls" id="touch-controls">
+      <div class="stick-zone" id="stick-zone"><div class="stick-base"><div class="stick-knob" id="stick-knob"></div></div><span class="stick-label">MOVE</span></div>
+      <div class="action-controls"><button class="action-button skill-action" id="skill-button"><span>✦</span><small>SKILL</small><i></i></button><button class="action-button pass-action" id="pass-button"><span>↗</span><small>PASS</small></button><button class="action-button shoot-action" id="shoot-button"><span>◉</span><small>SHOOT</small></button></div>
+    </div>
+    <footer class="desktop-help"><span><kbd>WASD</kbd> MOVE</span><span><kbd>SHIFT</kbd> SPRINT</span><span><kbd>E</kbd> SKILL MOVE</span><span><kbd>Q</kbd> PASS</span><span><kbd>SPACE</kbd> SHOOT</span><span><kbd>ESC</kbd> PAUSE</span></footer>
+    <div class="mobile-hint">DRAG TO MOVE <span>·</span> HOLD SHOOT TO CHARGE</div>
+    <div class="goal-flash" id="goal-flash"><b>GOAL!</b><small>WHAT A FINISH.</small></div>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
